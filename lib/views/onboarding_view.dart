@@ -8,11 +8,12 @@ class OnboardingView extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset('assets/logo.png', height: 200),
+            Image.asset('sneakbid/assets/img/logo.png'),
             SizedBox(height: 30),
             Text(
               'Welcome to SneakBid',
               style: TextStyle(
+                color: Colors.white,
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
