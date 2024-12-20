@@ -1,28 +1,40 @@
 import 'package:flutter/material.dart';
 
-// Sneaker Model
-class Sneaker {
-  final String id;
-  final String name;
-  final String brand;
-  final String description;
-  final double currentBid;
-  final double startingBid;
-  final String imageUrl;
-  final DateTime endTime;
-  final List<String> sizes;
-
-  Sneaker({
-    required this.id,
-    required this.name,
-    required this.brand,
-    required this.description,
-    required this.currentBid,
-    required this.startingBid,
-    required this.imageUrl,
-    required this.endTime,
-    required this.sizes,
-  });
+ThemeData getApplicationTheme() {
+  return ThemeData(
+    primarySwatch: Colors.orange,
+    scaffoldBackgroundColor: Colors.grey[100],
+    fontFamily: 'Montserrat',
+    appBarTheme: AppBarTheme(
+      backgroundColor: Colors.white,
+      elevation: 0,
+      titleTextStyle: TextStyle(
+        fontFamily: 'Montserrat',
+        fontWeight: FontWeight.bold,
+        fontSize: 24,
+        color: Colors.black,
+      ),
+      iconTheme: IconThemeData(color: Colors.black),
+    ),
+    bottomNavigationBarTheme: BottomNavigationBarThemeData(
+      backgroundColor: Colors.white,
+      selectedItemColor: Colors.orange,
+      unselectedItemColor: Colors.grey[400],
+      type: BottomNavigationBarType.fixed,
+      elevation: 8,
+    ),
+    chipTheme: ChipThemeData(
+      backgroundColor: Colors.white,
+      disabledColor: Colors.grey[200],
+      selectedColor: Colors.orange,
+      secondarySelectedColor: Colors.orange,
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+        side: BorderSide(color: Colors.grey[300]!),
+      ),
+    ),
+  );
 }
 
 class DashboardView extends StatefulWidget {
@@ -31,381 +43,217 @@ class DashboardView extends StatefulWidget {
 }
 
 class _DashboardViewState extends State<DashboardView> {
-  int _currentIndex = 0;
-
-  // Sample sneaker data
-  final List<Sneaker> featuredSneakers = [
-    Sneaker(
-      id: '001',
-      name: 'Air Jordan 1 Retro High',
-      brand: 'Nike',
-      description: 'Iconic Bred Toe colorway',
-      currentBid: 450.00,
-      startingBid: 350.00,
-      imageUrl: 'assets/sneakers/jordan1.jpeg',
-      endTime: DateTime.now().add(Duration(days: 3, hours: 12)),
-      sizes: ['8', '9', '10', '11', '12'],
-    ),
-    Sneaker(
-      id: '002',
-      name: 'Yeezy Boost 350 V2',
-      brand: 'Adidas',
-      description: 'Zebra edition',
-      currentBid: 320.50,
-      startingBid: 250.00,
-      imageUrl: 'assets/sneakers/yezzy350.jpeg',
-      endTime: DateTime.now().add(Duration(days: 5, hours: 6)),
-      sizes: ['7', '8', '9', '10', '11'],
-    ),
-    Sneaker(
-      id: '003',
-      name: 'Puma RS-X Reinvention',
-      brand: 'Puma',
-      description: 'Innovative street style',
-      currentBid: 210.00,
-      startingBid: 180.00,
-      imageUrl: 'assets/sneakers/puma-rs.jpeg',
-      endTime: DateTime.now().add(Duration(days: 2, hours: 18)),
-      sizes: ['8', '9', '10'],
-    ),
-  ];
-
-  // Tabs for bottom navigation
-  final List<Widget> _tabs = [
-    HomeTab(),
-    BidsTab(),
-    ProfileTab(),
-  ];
+  String? selectedCategory;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _tabs[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.gavel),
-            label: 'My Bids',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-      ),
-    );
-  }
-}
+      body: SafeArea(
+        child: CustomScrollView(
+          slivers: [
+            // App Bar
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Text(
+                  'SneakBid',
+                  style: Theme.of(context).appBarTheme.titleTextStyle,
+                ),
+              ),
+            ),
 
-class HomeTab extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('SneakBid'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.notifications),
-            onPressed: () {
-              // TODO: Implement notifications
-            },
-          ),
-        ],
-      ),
-      body: CustomScrollView(
-        slivers: [
-          // Search Bar
-          SliverAppBar(
-            floating: true,
-            snap: true,
-            backgroundColor: Colors.white,
-            title: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8.0),
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: 'Search sneakers...',
-                  prefixIcon: Icon(Icons.search),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
+            // Search Bar
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 10,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText: 'Search sneakers...',
+                      hintStyle: TextStyle(
+                        color: Colors.grey[400],
+                        fontFamily: 'Montserrat',
+                      ),
+                      prefixIcon: Icon(Icons.search, color: Colors.grey[400]),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
 
-          // Categories Section
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.all(16.0),
+            // Categories Title
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 12.0),
+                child: Text(
+                  'Categories',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Montserrat',
+                  ),
+                ),
+              ),
+            ),
+
+            // Categories
+            SliverToBoxAdapter(
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
+                padding: EdgeInsets.symmetric(horizontal: 12.0),
                 child: Row(
                   children: [
                     _buildCategoryChip('Nike'),
-                    SizedBox(width: 10),
+                    SizedBox(width: 8),
                     _buildCategoryChip('Adidas'),
-                    SizedBox(width: 10),
+                    SizedBox(width: 8),
                     _buildCategoryChip('Puma'),
-                    SizedBox(width: 10),
+                    SizedBox(width: 8),
                     _buildCategoryChip('New Balance'),
                   ],
                 ),
               ),
             ),
-          ),
 
-          // Featured Sneakers Title
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Featured Sneakers',
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
+            // Featured Sneakers Title
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 16.0),
+                child: Text(
+                  'Featured Sneakers',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Montserrat',
                   ),
-                  TextButton(
-                    onPressed: () {
-                      // TODO: View all featured sneakers
-                    },
-                    child: Text('View All'),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          // Featured Sneakers Horizontal List
-          SliverToBoxAdapter(
-            child: SizedBox(
-              height: 300,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: 3,
-                itemBuilder: (context, index) {
-                  final sneaker = (_DashboardViewState().featuredSneakers)[index];
-                  return _buildFeaturedSneakerCard(sneaker);
-                },
-              ),
-            ),
-          ),
-
-          // Live Auctions Title
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Text(
-                'Live Auctions',
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-          ),
 
-          // Live Auctions List
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                final sneaker = (_DashboardViewState().featuredSneakers)[index];
-                return _buildLiveAuctionTile(sneaker);
-              },
-              childCount: 3,
+            // Featured Sneakers Grid
+            SliverPadding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              sliver: SliverGrid(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 0.75,
+                  mainAxisSpacing: 16.0,
+                  crossAxisSpacing: 16.0,
+                ),
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) => _buildSneakerCard(),
+                  childCount: 4,
+                ),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
-  // Category Chip Widget
   Widget _buildCategoryChip(String label) {
-    return ChoiceChip(
-      label: Text(label),
-      selected: false,
+    bool isSelected = selectedCategory == label;
+    return FilterChip(
+      label: Text(
+        label,
+        style: TextStyle(
+          color: isSelected ? Colors.white : Colors.black87,
+          fontFamily: 'Montserrat',
+          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+        ),
+      ),
+      selected: isSelected,
       onSelected: (bool selected) {
-        // TODO: Implement category filtering
+        setState(() {
+          selectedCategory = selected ? label : null;
+        });
       },
+      backgroundColor: Colors.white,
+      selectedColor: Colors.orange,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+        side: BorderSide(
+          color: isSelected ? Colors.orange : Colors.grey[300]!,
+        ),
+      ),
     );
   }
 
-  // Featured Sneaker Card Widget
-  Widget _buildFeaturedSneakerCard(Sneaker sneaker) {
+  Widget _buildSneakerCard() {
     return Container(
-      width: 250,
-      margin: EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            spreadRadius: 2,
-            blurRadius: 5,
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: Offset(0, 2),
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
-            child: Image.asset(
-              sneaker.imageUrl,
-              height: 200,
-              width: double.infinity,
-              fit: BoxFit.cover,
+          Expanded(
+            flex: 3,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+              ),
+              // Add image here when available
             ),
           ),
-          Padding(
-            padding: EdgeInsets.all(12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  sneaker.name,
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(height: 5),
-                Text(
-                  sneaker.brand,
-                  style: TextStyle(
-                    color: Colors.grey,
-                  ),
-                ),
-                SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Current Bid: \$${sneaker.currentBid.toStringAsFixed(2)}',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blue,
-                      ),
+          Expanded(
+            flex: 2,
+            child: Padding(
+              padding: EdgeInsets.all(12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Nike Jordan 1 Travis Scoot',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
                     ),
-                    ElevatedButton(
-                      onPressed: () {
-                        // TODO: Open bid details
-                      },
-                      child: Text('Bid Now'),
-                      style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(horizontal: 15),
-                      ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(
+                    '\$299.99',
+                    style: TextStyle(
+                      color: Colors.orange,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
                     ),
-                  ],
-                ),
-              ],
+                  ),
+                ],
+              ),
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  // Live Auction Tile Widget
-  Widget _buildLiveAuctionTile(Sneaker sneaker) {
-    return ListTile(
-      leading: ClipRRect(
-        borderRadius: BorderRadius.circular(10),
-        child: Image.asset(
-          sneaker.imageUrl,
-          width: 80,
-          height: 80,
-          fit: BoxFit.cover,
-        ),
-      ),
-      title: Text(
-        sneaker.name,
-        style: TextStyle(fontWeight: FontWeight.bold),
-      ),
-      subtitle: Text(
-        'Ending in ${_formatRemainingTime(sneaker.endTime)}',
-        style: TextStyle(color: Colors.red),
-      ),
-      trailing: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            '\$${sneaker.currentBid.toStringAsFixed(2)}',
-            style: TextStyle(
-              color: Colors.blue,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          Text(
-            '${sneaker.sizes.join(", ")} US',
-            style: TextStyle(
-              color: Colors.grey,
-              fontSize: 12,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // Time Formatting Helper
-  String _formatRemainingTime(DateTime endTime) {
-    final duration = endTime.difference(DateTime.now());
-    final days = duration.inDays;
-    final hours = duration.inHours % 24;
-    final minutes = duration.inMinutes % 60;
-
-    if (days > 0) {
-      return '$days d $hours h';
-    } else if (hours > 0) {
-      return '$hours h $minutes m';
-    } else {
-      return '$minutes m';
-    }
-  }
-}
-
-// Placeholder Tabs
-class BidsTab extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('My Bids'),
-      ),
-      body: Center(
-        child: Text('Your Active and Past Bids'),
-      ),
-    );
-  }
-}
-
-class ProfileTab extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Profile'),
-      ),
-      body: Center(
-        child: Text('User Profile Information'),
       ),
     );
   }

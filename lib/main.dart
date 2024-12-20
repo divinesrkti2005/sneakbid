@@ -4,6 +4,7 @@ import 'package:sneakbid/views/login_view.dart';
 import 'package:sneakbid/views/signup_view.dart';
 import 'package:sneakbid/views/dashboard_view.dart';
 
+
 void main() {
   runApp(SneakBid());
 }
