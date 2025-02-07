@@ -61,7 +61,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         final result = await _loginUseCase(
           LoginParams(
             username: event.username,
-            password: event.password,
+            password: event.password, email: '',
           ),
         );
 

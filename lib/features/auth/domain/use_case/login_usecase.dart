@@ -12,7 +12,7 @@ class LoginParams extends Equatable {
 
   const LoginParams({
     required this.username,
-    required this.password,
+    required this.password, required String email,
   });
 
   // Initial Constructor
@@ -27,7 +27,7 @@ class LoginParams extends Equatable {
 class LoginUseCase implements UsecaseWithParams<String, LoginParams> {
   final IAuthRepository repository;
 
-  LoginUseCase(this.repository);
+  LoginUseCase(this.repository, int i);
 
   @override
   Future<Either<Failure, String>> call(LoginParams params) {
